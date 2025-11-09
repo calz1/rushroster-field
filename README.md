@@ -52,7 +52,7 @@ This field device is the core of the RushRoster speed monitoring system. It runs
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # 2. Clone and navigate
-git clone https://github.com/yourusername/rush-roster.git
+git clone https://github.com/calz1/rushroster-field.git
 cd rush-roster/field
 
 # 3. Install dependencies
