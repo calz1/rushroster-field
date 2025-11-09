@@ -1,7 +1,5 @@
 # RushRoster Field Device
 
-> **IoT Speed Monitoring System** | Raspberry Pi + Radar + Computer Vision
-
 ## The Origin Story
 
 My neighborhood has a dangerous road with no crosswalk, despite kids needing to cross it daily to get to school. Local authorities were skeptical about the speeding problem, so I decided to build a system to collect data and prove it. The result is RushRoster—a full-featured IoT platform that demonstrates how multiple sensors and AI can work together to solve real-world problems.
@@ -90,9 +88,7 @@ Access the web dashboard at **http://localhost:8000**
 
 ### Video Demo
 
-<video src="example_media/example.mp4" width="100%" controls></video>
-
-*Real-time dashboard demonstration showing live monitoring and event detection*
+[Real-time dashboard demonstration showing live monitoring and event detection](example_media/example.mp4)
 
 ### Lightweight System Performance
 
