@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events Browser - RushRoster Field Device</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #1e293b;
+            padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .button:hover {
+            background: #2563eb;
+        }
+
+        .button.danger {
+            background: #ef4444;
+        }
+
+        .button.danger:hover {
+            background: #dc2626;
+        }
+
+        .button.secondary {
+            background: #64748b;
+        }
+
+        .button.secondary:hover {
+            background: #475569;
+        }
+
+        .button:disabled {
+            background: #334155;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #1e293b;
+            border-radius: 0.5rem;
+            border: 1px solid #334155;
+        }
+
+        .controls-left {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .info-text {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .table-container {
+            background: #1e293b;
+            border-radius: 0.5rem;
+            border: 1px solid #334155;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #0f172a;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #60a5fa;
+            border-bottom: 2px solid #334155;
+        }
+
+        th.checkbox-col {
+            width: 50px;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #1e293ba0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-speeding {
+            background: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        .status-normal {
+            background: #14532d;
+            color: #86efac;
+        }
+
+        .status-uploaded {
+            background: #1e3a8a;
+            color: #93c5fd;
+        }
+
+        .status-pending {
+            background: #713f12;
+            color: #fcd34d;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .pagination a,
+        .pagination span {
+            padding: 0.5rem 1rem;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.375rem;
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .pagination a:hover {
+            background: #334155;
+        }
+
+        .pagination .current {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            font-weight: 600;
+        }
+
+        .pagination .disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-text {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-subtext {
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .photo-link {
+            color: #22c55e;
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        .photo-link:hover {
+            color: #16a34a;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.2s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 0;
+            max-width: 90%;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .modal-image {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 0.5rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            color: #fff;
+            font-size: 3rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-info {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            color: #e2e8f0;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>📋 Events Browser</h1>
+                <div class="subtitle">Device ID: {{ device_id }} | Total Events: {{ total }}</div>
+            </div>
+            <div class="header-actions">
+                <a href="/" class="button secondary">← Back to Dashboard</a>
+            </div>
+        </header>
+
+        {% if total > 0 %}
+        <div class="controls">
+            <div class="controls-left">
+                <button class="button danger" onclick="deleteSelected()" id="delete-selected-btn" disabled>
+                    Delete Selected
+                </button>
+                <button class="button danger" onclick="clearAllEvents()">
+                    Clear All Events
+                </button>
+                <select id="photoFilter" class="button secondary" style="padding: 0.75rem 1rem; cursor: pointer; font-size: 0.9rem; font-weight: 600;" onchange="applyFilter()">
+                    <option value="">All Events</option>
+                    <option value="true">Events with Photos</option>
+                    <option value="false">Events without Photos</option>
+                </select>
+            </div>
+            <div class="info-text">
+                Showing {{ events|length }} of {{ total }} events (Page {{ page }} of {{ total_pages }})
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="checkbox-col">
+                            <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                        </th>
+                        <th>ID</th>
+                        <th>Timestamp</th>
+                        <th>Speed</th>
+                        <th>Limit</th>
+                        <th>Status</th>
+                        <th>Photo</th>
+                        <th>Upload</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="event-checkbox" value="{{ event.id }}" onchange="updateDeleteButton()">
+                        </td>
+                        <td>{{ event.id }}</td>
+                        <td>{{ event.timestamp }}</td>
+                        <td style="font-weight: 600;">{{ "%.1f"|format(event.speed) }} MPH</td>
+                        <td>{{ "%.1f"|format(event.speed_limit) }} MPH</td>
+                        <td>
+                            {% if event.is_speeding %}
+                            <span class="status-badge status-speeding">Speeding</span>
+                            {% else %}
+                            <span class="status-badge status-normal">Normal</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if event.photo_path %}
+                            <span class="photo-link" onclick="showPhoto({{ event.id }}, '{{ event.timestamp }}', {{ event.speed }})">🖼️ View Photo</span>
+                            {% else %}
+                            <span style="color: #64748b;">No</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if event.uploaded %}
+                            <span class="status-badge status-uploaded">Uploaded</span>
+                            {% else %}
+                            <span class="status-badge status-pending">Pending</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+            <a href="/events/browse?page=1{% if has_photos is not none %}&has_photos={{ has_photos }}{% endif %}">« First</a>
+            <a href="/events/browse?page={{ page - 1 }}{% if has_photos is not none %}&has_photos={{ has_photos }}{% endif %}">‹ Previous</a>
+            {% else %}
+            <span class="disabled">« First</span>
+            <span class="disabled">‹ Previous</span>
+            {% endif %}
+
+            <span class="current">Page {{ page }} of {{ total_pages }}</span>
+
+            {% if page < total_pages %}
+            <a href="/events/browse?page={{ page + 1 }}{% if has_photos is not none %}&has_photos={{ has_photos }}{% endif %}">Next ›</a>
+            <a href="/events/browse?page={{ total_pages }}{% if has_photos is not none %}&has_photos={{ has_photos }}{% endif %}">Last »</a>
+            {% else %}
+            <span class="disabled">Next ›</span>
+            <span class="disabled">Last »</span>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <div class="empty-state-text">No events recorded</div>
+            <div class="empty-state-subtext">Events will appear here as vehicles are detected</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Photo Modal -->
+    <div id="photoModal" class="modal" onclick="closeModal()">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" class="modal-image" src="" alt="Event Photo">
+        </div>
+        <div class="modal-info" id="modalInfo"></div>
+    </div>
+
+    <script>
+        // Initialize filter dropdown on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            const hasPhotosParam = params.get('has_photos');
+            if (hasPhotosParam !== null) {
+                document.getElementById('photoFilter').value = hasPhotosParam;
+            }
+        });
+
+        function applyFilter() {
+            const filterValue = document.getElementById('photoFilter').value;
+            const params = new URLSearchParams(window.location.search);
+
+            // Reset to page 1 when changing filter
+            params.set('page', '1');
+
+            if (filterValue === '') {
+                params.delete('has_photos');
+            } else {
+                params.set('has_photos', filterValue);
+            }
+
+            window.location.href = '/events/browse?' + params.toString();
+        }
+
+        function showPhoto(eventId, timestamp, speed) {
+            const modal = document.getElementById('photoModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalInfo = document.getElementById('modalInfo');
+
+            // Set image source
+            modalImage.src = `/events/photo/${eventId}`;
+
+            // Set info text
+            modalInfo.innerHTML = `Event #${eventId} | ${timestamp} | ${speed.toFixed(1)} MPH`;
+
+            // Show modal
+            modal.style.display = 'block';
+
+            // Prevent event from bubbling to modal background
+            event.stopPropagation();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('photoModal');
+            modal.style.display = 'none';
+        }
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('select-all');
+            const checkboxes = document.querySelectorAll('.event-checkbox');
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            updateDeleteButton();
+        }
+
+        function updateDeleteButton() {
+            const checkboxes = document.querySelectorAll('.event-checkbox:checked');
+            const deleteBtn = document.getElementById('delete-selected-btn');
+            deleteBtn.disabled = checkboxes.length === 0;
+
+            // Update select-all checkbox state
+            const allCheckboxes = document.querySelectorAll('.event-checkbox');
+            const selectAll = document.getElementById('select-all');
+            selectAll.checked = checkboxes.length === allCheckboxes.length && allCheckboxes.length > 0;
+        }
+
+        async function deleteSelected() {
+            const checkboxes = document.querySelectorAll('.event-checkbox:checked');
+            const eventIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+            if (eventIds.length === 0) {
+                return;
+            }
+
+            const confirmed = confirm(`Are you sure you want to delete ${eventIds.length} event(s)?`);
+            if (!confirmed) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/events/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(eventIds),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message || 'Events deleted successfully');
+                    location.reload();
+                } else {
+                    alert('Error deleting events: ' + (data.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error deleting events: ' + error.message);
+            }
+        }
+
+        async function clearAllEvents() {
+            const confirmed = confirm('Are you sure you want to delete ALL events? This action cannot be undone!');
+            if (!confirmed) {
+                return;
+            }
+
+            const doubleConfirmed = confirm('This will permanently delete all events. Are you absolutely sure?');
+            if (!doubleConfirmed) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/events/clear', {
+                    method: 'POST',
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message || 'All events cleared successfully');
+                    location.href = '/events/browse';
+                } else {
+                    alert('Error clearing events: ' + (data.detail || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error clearing events: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

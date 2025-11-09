@@ -1,0 +1,94 @@
+# RushRoster Field Device Configuration Example
+# Copy this file to config.yaml and update with your actual values
+
+device:
+  # Unique identifier for this field device
+  id: rush-roster-001
+
+  location:
+    # GPS coordinates for the device location
+    latitude: 38.0000
+    longitude: -77.0000
+    street_name: Your Street Name
+
+  # Speed limit for this location (mph)
+  speed_limit: 35.0
+
+sensors:
+  radar:
+    # Serial port for radar sensor (e.g., /dev/ttyACM0, /dev/ttyUSB0, COM3)
+    port: /dev/ttyACM0
+    # How many samples per second to collect
+    sample_rate: 10
+
+  camera:
+    # Camera device index (0 for default camera, 1 for second camera, etc.)
+    device: 0
+
+    # Camera resolution [width, height]
+    resolution:
+      - 1920
+      - 1080
+
+    # Target camera name (optional, for camera selection)
+    target_name: HD Pro Webcam C920
+
+    # Digital zoom factor (1.0 = no zoom, 2.0 = 2x zoom on center)
+    zoom_factor: 1.0
+
+thresholds:
+  # Speed threshold for general monitoring (mph)
+  speed_threshold_mph: 10.0
+
+  # How much over the speed limit to trigger a photo (mph)
+  photo_trigger_over_limit: 5.0
+
+  # Minimum valid speed reading (mph)
+  min_speed: 10.0
+
+  # Maximum valid speed reading (mph)
+  max_speed: 75.0
+
+upload:
+  # How often to sync data to cloud (minutes)
+  frequency_minutes: 15
+
+  # Maximum number of records to upload per batch
+  batch_size: 100
+
+  # Number of retry attempts for failed uploads
+  retry_attempts: 3
+
+cloud:
+  # URL of the cloud API server
+  api_url: http://localhost:8000
+
+  # API key for authentication (keep this secret!)
+  # Generate a secure key for production use
+  api_key: your_api_key_here
+
+hud:
+  # Enable HUD (heads-up display) on camera feed
+  enabled: true
+
+  # Show speed on HUD
+  show_speed: true
+
+  # Show speed limit on HUD
+  show_speed_limit: true
+
+  # Show tracking state on HUD
+  show_tracking_state: true
+
+logging:
+  # Enable log rotation (automatically delete old logs)
+  enabled: true
+
+  # Directory to store log files
+  log_dir: logs
+
+  # Maximum size per log file in bytes (10MB = 10485760)
+  max_bytes: 10485760
+
+  # Number of backup log files to keep
+  backup_count: 5
