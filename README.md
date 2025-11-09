@@ -4,7 +4,7 @@
 
 My neighborhood has a dangerous road with no crosswalk, despite kids needing to cross it daily to get to school. Local authorities were skeptical about the speeding problem, so I decided to build a system to collect data and prove it. The result is RushRoster: a full-featured platform that demonstrates how multiple sensors and AI can work together without a lot of exotic hardware.
 
-This software for the "field device" is the core of the RushRoster speed monitoring system. It runs on a Raspberry Pi with a radar sensor and camera attached to detect and photograph speeding vehicles. This software works standalone or can optionally connect to RushRoster Cloud for centralized data management across multiple devices.
+This software for the "field device" is the core of the RushRoster speed monitoring system. It runs on a Raspberry Pi with a radar sensor and camera attached to detect and photograph speeding vehicles. This software works standalone or can optionally connect to [RushRoster Cloud](https://github.com/calz1/rushroster-cloud) for centralized data management across multiple devices.
 
 ## Features
 
