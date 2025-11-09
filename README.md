@@ -88,7 +88,7 @@ Access the web dashboard at **http://localhost:8000**
 
 ### Video Demo
 
-[Real-time dashboard demonstration showing live monitoring and event detection](example_media/example.mp4)
+<video src="https://github.com/user-attachments/assets/b387428d-2e24-4c93-937e-480cb6decec9" width="581" height="618"></video>
 
 ### Lightweight System Performance
 
